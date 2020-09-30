@@ -256,6 +256,7 @@ def align_and_update_state_dicts(model_state_dict, ckpt_state_dict, c2_conversio
     max_len_ckpt = max(len(key) for key in ckpt_keys) if ckpt_keys else 1
     log_str_template = "{: <{}} loaded from {: <{}} of shape {}"
     logger = logging.getLogger(__name__)
+    logger.setLevel(logging.WARNING)
     # matched_pairs (matched checkpoint key --> matched model key)
     matched_keys = {}
     for idx_model, idx_ckpt in enumerate(idxs.tolist()):
