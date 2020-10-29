@@ -130,9 +130,16 @@ def build_optimizer(cfg: CfgNode, model: torch.nn.Module) -> torch.optim.Optimiz
                 weight_decay = cfg.SOLVER.WEIGHT_DECAY_BIAS
             params += [{"params": [value], "lr": lr, "weight_decay": weight_decay}]
 
-    optimizer = torch.optim.SGD(
-        params, cfg.SOLVER.BASE_LR, momentum=cfg.SOLVER.MOMENTUM, nesterov=cfg.SOLVER.NESTEROV
-    )
+    if cfg.SOLVER.NAME.lower() == "sgd":
+        optimizer = torch.optim.SGD(
+            params, cfg.SOLVER.BASE_LR, momentum=cfg.SOLVER.MOMENTUM, nesterov=cfg.SOLVER.NESTEROV
+        )
+    elif cfg.SOLVER.NAME.lower() == "adam":
+        optimizer = torch.optim.Adam(params)
+    elif cfg.SOLVER.NAME.lower() == "adamw":
+        optimizer = torch.optim.AdamW(params)
+    else:
+        raise KeyError(f"Invalid optimizer `{cfg.SOLVER.NAME.lower()}`")
     optimizer = maybe_add_gradient_clipping(cfg, optimizer)
     return optimizer
 
